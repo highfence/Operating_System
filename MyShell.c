@@ -1,23 +1,31 @@
+/*
+ * NHN NEXT 2016 2nd semester Operating System
+ * coded by highfence (highfence@naver.com)
+ */
 
-
-// define
+// define part
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LINE_NUM 256
 #define MAX_CMD_NUM 128
 
-// static
+// static part
 const char prompt[] = "MyOwnShell> ";
 const char delimiter[] = " \t\n";
 
-// function
+// function part
 void CmdProcess(char*);
 int CmdParsing(char*, char**);
 
 
+// header part
 #include <stdio.h>
 #include <string.h>
 
 
+
+/*
+ * main
+ */
 
 
 int main(void)
