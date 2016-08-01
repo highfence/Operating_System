@@ -1,31 +1,25 @@
-/*
- * NHN NEXT 2016 2nd semester Operating System
- * coded by highfence (highfence@naver.com)
- */
 
-// define part
+
+/* define */
 #define _CRT_SECURE_NO_WARNINGS
 #define MAX_LINE_NUM 256
 #define MAX_CMD_NUM 128
 
-// static part
+/* static */
 const char prompt[] = "MyOwnShell> ";
 const char delimiter[] = " \t\n";
 
-// function part
+/* function */
 void CmdProcess(char*);
 int CmdParsing(char*, char**);
+int ActFunction(char**, int);
 
-
-// header part
+/* include */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 
-
-/*
- * main
- */
 
 
 int main(void)
@@ -38,7 +32,7 @@ int main(void)
 
 		if (fgets(cmdLine, MAX_LINE_NUM, stdin) == NULL)
 		{
-			return 1;
+			return 0;
 		}
 
 		fflush(stdout);
@@ -60,12 +54,9 @@ void CmdProcess(char* cmdLine)
 
 	cmdCount = CmdParsing(cmdLine, cmdStr);
 
-	// only for test
-	printf("Number of Command : %d \n", cmdCount);
-
-	for (idx = 0; idx < cmdCount; idx++)
+	if (!ActFunction(cmdStr, cmdCount))
 	{
-		printf("Command #%d : %s\n", idx + 1, cmdStr[idx]);
+		return;
 	}
 
 
@@ -77,6 +68,11 @@ int CmdParsing(char* cmdLine, char** cmdStr)
 {
 	int count = 1;
 
+	if (cmdStr[0] == NULL)
+	{
+		return 0;
+	}
+
 	cmdStr[0] = strtok(cmdLine, delimiter);
 
 	while (cmdStr[count] = strtok(NULL, delimiter))
@@ -86,3 +82,43 @@ int CmdParsing(char* cmdLine, char** cmdStr)
 
 	return count;
 }
+
+int ActFunction(char** cmdStr, int cmdCount)
+{
+	if (cmdCount == 0 || cmdStr == NULL)
+	{
+		printf("ActFunction Input Error!");
+		return 0;
+	}
+
+	if (!strcmp(cmdStr[0], "exit") || !strcmp(cmdStr[0], "quit"))
+	{
+		exit(0);
+	}
+
+	return 0;
+		
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
