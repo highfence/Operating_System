@@ -13,13 +13,15 @@ const char delimiter[] = " \t\n";
 void CmdProcess(char*);
 int CmdParsing(char*, char**);
 int ActFunction(char**, int);
+void cmdLs(char**, int);
+void cmdLl(char**, int);
 
 /* include */
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-
-
+#include <unistd.h>
+#include <dirent.h>
 
 
 int main(void)
@@ -54,7 +56,7 @@ void CmdProcess(char* cmdLine)
 
 	cmdCount = CmdParsing(cmdLine, cmdStr);
 
-	if (!ActFunction(cmdStr, cmdCount))
+	if (cmdCount == 0 || !ActFunction(cmdStr, cmdCount))
 	{
 		return;
 	}
@@ -68,7 +70,7 @@ int CmdParsing(char* cmdLine, char** cmdStr)
 {
 	int count = 1;
 
-	if (cmdStr[0] == NULL)
+	if (cmdLine[0] == NULL || cmdLine[0] == '\n')
 	{
 		return 0;
 	}
@@ -83,11 +85,12 @@ int CmdParsing(char* cmdLine, char** cmdStr)
 	return count;
 }
 
+
 int ActFunction(char** cmdStr, int cmdCount)
 {
-	if (cmdCount == 0 || cmdStr == NULL)
+	if (cmdCount == 0 || cmdStr[0] == NULL)
 	{
-		printf("ActFunction Input Error!");
+		printf("ActFunction Input Error!\n");
 		return 0;
 	}
 
@@ -96,12 +99,56 @@ int ActFunction(char** cmdStr, int cmdCount)
 		exit(0);
 	}
 
+	else if (!strcmp(cmdStr[0], "ls")) {
+		cmdLs(cmdStr, cmdCount);
+	}
 	return 0;
-		
+
 }
 
 
+/* function command ls */
+void cmdLs(char** cmdStr, int cmdCount)
+{
+	DIR *dir_info;
+	struct dirent *dir_entry;
 
+	if (!cmdCount) {
+		printf("Func cmdLs entry error! cmdCount is zero. \n");
+	}
+
+	else if (cmdCount == 1) {
+		dir_info = opendir(".");
+	}
+
+	else if (cmdCount == 2) {
+		if (!strcmp(cmdStr[1], "--help")) {
+			printf("[ls] : show files in this direction \n");
+			printf("[ls -l] : show files in this dirction with long listing \n");
+			return;
+		}
+		else if (!strcmp(cmdStr[1], "-l")) {
+			cmdLl(cmdStr, cmdCount);
+		}
+		else {
+			dir_info = opendir(cmdStr[1]);
+		}
+	}
+
+	else if (cmdCount >= 3) {
+		printf("Wrong command. if you want to know, type [ls --help] \n");
+		return;
+	}
+
+	if (dir_info != NULL) {
+		while (dir_entry = readdir(dir_info)) {
+			printf("%sn", dir_entry->d_name);
+		}
+		closedir(dir_info);
+	}
+
+	return;
+}
 
 
 
